@@ -14,6 +14,7 @@ import java.util.List;
 
 import static com.ahmetabdullahgultekin.photoshopapp.ImageProcess.paintWhiteToPink;
 import static com.ahmetabdullahgultekin.photoshopapp.ImageProcess.traverseImage;
+import static java.lang.StringTemplate.STR;
 
 public class ImageProcessor {
 
@@ -22,8 +23,8 @@ public class ImageProcessor {
     //private BufferedImage originalImage, resultImage;
     private WritableImage originalImage, resultImage;
     private long duration;
-    private final int numberOfThreads = System.getProperty("threads") == null ?
-            8 : Integer.parseInt(System.getProperty("threads"));
+    private final int numberOfThreads = Runtime.getRuntime().availableProcessors() * 2;
+            //8 : (Runtime.getRuntime().availableProcessors() * 2);
 
     public ImageProcessor() {
         imageProcess = new ImageProcess("Paint White to Pink");
@@ -67,14 +68,14 @@ public class ImageProcessor {
 
         endTime = System.currentTimeMillis();
         duration = endTime - startTime;
-        System.out.println(STR."initialize image \{duration}ms");
+        System.out.println(String.format("initialize image %dms", duration));
 
         resultImage = new WritableImage((int) originalImage.getWidth(), (int) originalImage.getHeight());
     }
 
     private void extractImage(String destinationFile) throws IOException {
 
-        destinationFile += STR."_\{LocalDate.now()}.jpg";
+        destinationFile += String.format("%s.jpg", LocalDate.now());
         //ImageIO.write(resultImage, "jpg", new File(destinationFile));
         System.out.println(resultImage.getPixelWriter().getPixelFormat().getType());
     }

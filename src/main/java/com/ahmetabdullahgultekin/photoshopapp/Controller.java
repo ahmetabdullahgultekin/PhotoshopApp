@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 
+
 public class Controller {
 
     //ImageProcessor class instance
@@ -85,10 +86,10 @@ public class Controller {
                 //outputImage = new Image(new FileInputStream(DESTINATION_FILE + STR."_\{LocalDate.now()}.jpg"));
 
                 long duration = endTime - startTime;
-                System.out.println(STR."Time taken: \{duration} ms");
+                System.out.printf("Time taken: %d ms%n", duration);
 
                 outputImageView.setImage(outputImage);
-                label.setText(STR."Process took: \{duration} ms");
+                label.setText(String.format("Process took: %d ms", duration));
 
             } catch (IOException ex) {
                 throw new RuntimeException(ex);

@@ -26,3 +26,10 @@
     -fx-padding: 10px;
     -fx-alignment: center;
 }
+
+.label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16px;
+    -fx-padding: 10px;
+    -fx-alignment: center;
+}
