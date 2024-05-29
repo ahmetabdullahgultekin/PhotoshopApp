@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -114,17 +115,24 @@ public class Controller {
 
         mainPane = new BorderPane();
 
-        mainPane.setLeft(inputImageView);
-        mainPane.setRight(outputImageView);
-        mainPane.setBottom(button);
-        mainPane.setTop(comboBox);
-        mainPane.setCenter(label);
+        HBox hBoxTop = new HBox();
+        hBoxTop.getChildren().addAll(comboBox, label);
 
-        BorderPane.setAlignment(inputImageView, Pos.CENTER);
-        BorderPane.setAlignment(outputImageView, Pos.CENTER);
-        BorderPane.setAlignment(button, Pos.CENTER);
-        BorderPane.setAlignment(comboBox, Pos.TOP_CENTER);
-        BorderPane.setAlignment(label, Pos.CENTER);
+        HBox hBoxCenter = new HBox();
+        hBoxCenter.getChildren().addAll(inputImageView, outputImageView);
+
+        HBox hBoxBottom = new HBox();
+        hBoxBottom.getChildren().addAll(button);
+
+        mainPane.setTop(hBoxTop);
+        mainPane.setCenter(hBoxCenter);
+        mainPane.setBottom(hBoxBottom);
+//
+//        BorderPane.setAlignment(inputImageView, Pos.CENTER);
+//        BorderPane.setAlignment(outputImageView, Pos.CENTER);
+//        BorderPane.setAlignment(button, Pos.CENTER);
+//        BorderPane.setAlignment(comboBox, Pos.TOP_CENTER);
+//        BorderPane.setAlignment(label, Pos.CENTER);
 
         this.scene = new Scene(mainPane, 1600, 900);
         scene.getStylesheets().add("com/ahmetabdullahgultekin/photoshopapp/stylesheet.css");

@@ -2,6 +2,9 @@ package com.ahmetabdullahgultekin.photoshopapp;
 
 import java.awt.image.BufferedImage;
 
+import static java.awt.Color.HSBtoRGB;
+import static java.awt.Color.RGBtoHSB;
+
 public class ImageProcess {
 
     private String name;
@@ -17,7 +20,7 @@ public class ImageProcess {
 
         int newRed = red, newGreen = green, newBlue = blue;
 
-        if(isShadeOfGray(imagePixel.getRedValue(), imagePixel.getGreenValue(), imagePixel.getBlueValue())) {
+        if (isShadeOfGray(imagePixel.getRedValue(), imagePixel.getGreenValue(), imagePixel.getBlueValue())) {
             newRed = Math.min(255, red + 10); //default +10
             newGreen = Math.max(0, green - 80); //default -80
             newBlue = Math.max(0, blue - 20); //default -20
@@ -38,115 +41,134 @@ public class ImageProcess {
         return new int[]{newRed, newGreen, newBlue};
     }
 
+    public static int[] increaseBrightness(ImagePixel imagePixel) {
 
-    public void newFeatures() {
-        System.out.println("This is the new feature");
-        // Traverse the image
-        /*
-        newRed = 255 - red;
-        newGreen = 255 - green;
-        newBlue = 255 - blue;
-        */
+        int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
 
-        /*
-        // Increase the brightness of the image
-        newRed = Math.min(255, red + 10);
-        newGreen = Math.min(255, green + 10);
-        newBlue = Math.min(255, blue + 10);
-        */
+        int newRed = Math.min(255, red + 10);
+        int newGreen = Math.min(255, green + 10);
+        int newBlue = Math.min(255, blue + 10);
 
-        /*
-        // Decrease the brightness of the image
-        newRed = Math.max(0, red - 10);
-        newGreen = Math.max(0, green - 10);
-        newBlue = Math.max(0, blue - 10);
-        */
+        return new int[]{newRed, newGreen, newBlue};
+    }
 
-        /*
-        // Increase the contrast of the image
-        newRed = Math.min(255, red + 50);
-        newGreen = Math.min(255, green + 50);
-        newBlue = Math.min(255, blue + 50);
-        */
+    public static int[] decreaseBrightness(ImagePixel imagePixel) {
 
-        /*
-        // Decrease the contrast of the image
-        newRed = Math.max(0, red - 50);
-        newGreen = Math.max(0, green - 50);
-        newBlue = Math.max(0, blue - 50);
-        */
+        int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
 
-        /*
-        // Grayscale the image
-        int luminosity = (int) (0.299 * red + 0.587 * green + 0.114 * blue);
-        newRed = luminosity;
-        newGreen = luminosity;
-        newBlue = luminosity;
-        */
+        int newRed = Math.max(0, red - 10);
+        int newGreen = Math.max(0, green - 10);
+        int newBlue = Math.max(0, blue - 10);
 
-        /*
-        // Reduce the saturation of the image
-        int average = (red + green + blue) / 3;
-        newRed = average;
-        newGreen = average;
-        newBlue = average;
-        */
+        return new int[]{newRed, newGreen, newBlue};
+    }
 
+    public static int[] increaseContrast(ImagePixel imagePixel) {
 
-        /*
-        // Increase the saturation of the image
+        int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
+
+        int newRed = Math.min(255, red + 50);
+        int newGreen = Math.min(255, green + 50);
+        int newBlue = Math.min(255, blue + 50);
+
+        return new int[]{newRed, newGreen, newBlue};
+    }
+
+    public static int[] decreaseContrast(ImagePixel imagePixel) {
+
+        int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
+
+        int newRed = Math.max(0, red - 50);
+        int newGreen = Math.max(0, green - 50);
+        int newBlue = Math.max(0, blue - 50);
+
+        return new int[]{newRed, newGreen, newBlue};
+    }
+
+    public static double[] grayscaleImage(ImagePixel imagePixel) {
+
+        int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
+
+        double luminosity = (0.299 * red + 0.587 * green + 0.114 * blue);
+
+        return new double[]{luminosity, luminosity, luminosity};
+    }
+
+    public static double[] reduceSaturation(ImagePixel imagePixel) {
+
+        int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
+
+        double average = (red + green + blue) / 3.0;
+
+        return new double[]{average, average, average};
+    }
+
+    public static double[] increaseSaturation(ImagePixel imagePixel) {
+
+        int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
+
         int max = Math.max(red, Math.max(green, blue));
         int min = Math.min(red, Math.min(green, blue));
-        int average = (red + green + blue) / 3;
-        newRed = average + (max - average) * 2;
-        newGreen = average + (max - average) * 2;
-        newBlue = average + (max - average) * 2;
-        */
+        double average = (red + green + blue) / 3.0;
 
-        /*
-        // Adjust the hue of the image
+        double newRed = average + (max - average) * 2,
+                newGreen = average + (max - average) * 2,
+                newBlue = average + (max - average) * 2;
+
+        return new double[]{newRed, newGreen, newBlue};
+    }
+
+    public static int[] adjustHue(ImagePixel imagePixel) {
+
+        int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
+
         float[] hsb = new float[3];
-        java.awt.Color.RGBtoHSB(red, green, blue, hsb);
+        RGBtoHSB(red, green, blue, hsb);
         hsb[0] = (hsb[0] + 0.1f) % 1.0f;
-        int newRGBx = java.awt.Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
-        newRed = getRed(newRGBx);
-        newGreen = getGreen(newRGBx);
-        newBlue = getBlue(newRGBx);
-        */
+        int newRGB = HSBtoRGB(hsb[0], hsb[1], hsb[2]);
 
-        /*
-        // apply a sepia filter
-        int sepiaRed = (int) (0.393 * red + 0.769 * green + 0.189 * blue);
-        int sepiaGreen = (int) (0.349 * red + 0.686 * green + 0.168 * blue);
-        int sepiaBlue = (int) (0.272 * red + 0.534 * green + 0.131 * blue);
-        newRed = Math.min(255, sepiaRed + 50);
-        newGreen = Math.min(255, sepiaGreen + 50);
-        newBlue = Math.min(255, sepiaBlue + 50);
-        */
+        imagePixel.setRGB(newRGB);
 
-        /*
-        // filter to make the image look like a cartoon
-        newRed = (int) (0.393 * red + 0.769 * green + 0.189 * blue);
-        newGreen = (int) (0.349 * red + 0.686 * green + 0.168 * blue);
-        newBlue = (int) (0.272 * red + 0.534 * green + 0.131 * blue);
-        */
+        int newRed = imagePixel.getRedValue(),
+                newGreen = imagePixel.getGreenValue(),
+                newBlue = imagePixel.getBlueValue();
 
-        /*
-        // filter to make the image look like a sunset
-        newRed = (int) (1.0 * red + 0.5 * green + 0.1 * blue);
-        newGreen = (int) (0.5 * red + 1.0 * green + 0.1 * blue);
-        newBlue = (int) (0.1 * red + 0.5 * green + 1.0 * blue);
-*/
+        return new int[]{newRed, newGreen, newBlue};
+    }
 
-        /*
-        // filter to make the image look like a sunrise
-        newRed = (int) (1.0 * red + 0.5 * green + 0.1 * blue);
-        newGreen = (int) (0.5 * red + 1.0 * green + 0.1 * blue);
-        newBlue = (int) (0.1 * red + 0.5 * green + 1.0 * blue);
-*/
-/*
-        // crop the image
-        if (x < 100 || x > 500 || y < 100 || y > 500) {
+    public static double[] applySepiaFilter(ImagePixel imagePixel) {
+
+        int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
+
+        double sepiaRed = (0.393 * red + 0.769 * green + 0.189 * blue),
+                sepiaGreen = (0.349 * red + 0.686 * green + 0.168 * blue),
+                sepiaBlue = (0.272 * red + 0.534 * green + 0.131 * blue);
+
+        double newRed = Math.min(255, sepiaRed + 50),
+                newGreen = Math.min(255, sepiaGreen + 50),
+                newBlue = Math.min(255, sepiaBlue + 50);
+
+        return new double[]{newRed, newGreen, newBlue};
+    }
+
+    public static double[] filterToSunset(ImagePixel imagePixel) {
+
+        int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
+
+        double newRed = (1.0 * red + 0.5 * green + 0.1 * blue),
+                newGreen = (0.5 * red + 1.0 * green + 0.1 * blue),
+                newBlue = (0.1 * red + 0.5 * green + 1.0 * blue);
+
+        return new double[]{newRed, newGreen, newBlue};
+    }
+
+    public static int[] cropImage(ImagePixel imagePixel) {
+
+        int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
+
+        int newRed, newGreen, newBlue;
+
+        if (imagePixel.getX() < 100 || imagePixel.getX() > 500 || imagePixel.getY() < 100 || imagePixel.getY() > 500) {
             newRed = 0;
             newGreen = 0;
             newBlue = 0;
@@ -155,10 +177,23 @@ public class ImageProcess {
             newGreen = green;
             newBlue = blue;
         }
-*/
+
+        return new int[]{newRed, newGreen, newBlue};
     }
+
+    public static double[] filterToNight(ImagePixel imagePixel) {
+
+        int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
+
+        double newRed = (0.1 * red + 0.1 * green + 1.0 * blue),
+                newGreen = (0.1 * red + 0.1 * green + 1.0 * blue),
+                newBlue = (0.1 * red + 0.1 * green + 1.0 * blue);
+
+        return new double[]{newRed, newGreen, newBlue};
+    }
+
     private static boolean isShadeOfGray(int red, int green, int blue) {
-        return Math.abs(red - green) < 30 && Math.abs(red - blue) < 30 && Math.abs( green - blue) < 30;
+        return Math.abs(red - green) < 30 && Math.abs(red - blue) < 30 && Math.abs(green - blue) < 30;
     }
 
     public String getName() {

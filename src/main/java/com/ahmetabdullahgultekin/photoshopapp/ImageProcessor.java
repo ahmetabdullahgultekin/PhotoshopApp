@@ -3,18 +3,13 @@ package com.ahmetabdullahgultekin.photoshopapp;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
-
-import javax.imageio.ImageIO;
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ahmetabdullahgultekin.photoshopapp.ImageProcess.paintWhiteToPink;
-import static com.ahmetabdullahgultekin.photoshopapp.ImageProcess.traverseImage;
-import static java.lang.StringTemplate.STR;
+import static com.ahmetabdullahgultekin.photoshopapp.ImageProcess.*;
 
 public class ImageProcessor {
 
@@ -32,6 +27,19 @@ public class ImageProcessor {
         imageProcesses = new ArrayList<>();
         imageProcesses.add(new ImageProcess("Paint White to Pink"));
         imageProcesses.add(new ImageProcess("Traverse Image"));
+        imageProcesses.add(new ImageProcess("Increase Brightness"));
+        imageProcesses.add(new ImageProcess("Decrease Brightness"));
+        imageProcesses.add(new ImageProcess("Increase Contrast"));
+        imageProcesses.add(new ImageProcess("Decrease Contrast"));
+        imageProcesses.add(new ImageProcess("Grayscale Image"));
+        imageProcesses.add(new ImageProcess("Increase Saturation"));
+        imageProcesses.add(new ImageProcess("Decrease Saturation"));
+        imageProcesses.add(new ImageProcess("Increase Hue"));
+        imageProcesses.add(new ImageProcess("Apply Sepia Filter"));
+        imageProcesses.add(new ImageProcess("Filter To Sunset"));
+        imageProcesses.add(new ImageProcess("Filter To Night"));
+        imageProcesses.add(new ImageProcess("Crop Image"));
+        imageProcesses.add(new ImageProcess("Rotate Image"));
     }
 
     public WritableImage startProcess(String sourceFile, String destinationFile) throws IOException {
@@ -122,11 +130,25 @@ public class ImageProcessor {
 
     public void recolourPixel(WritableImage originalImage, WritableImage resultImage, int x, int y) {
 
-        ImagePixel imagePixel = new ImagePixel(originalImage.getPixelReader().getArgb(x, y));
+        ImagePixel imagePixel = new ImagePixel(x, y, originalImage.getPixelReader().getArgb(x, y));
 
         int[] RGBValues = switch (imageProcess.getName()) {
             case "Paint White to Pink" -> paintWhiteToPink(imagePixel);
             case "Traverse Image" -> traverseImage(imagePixel);
+            case "Increase Brightness" -> increaseBrightness(imagePixel);
+            case "Decrease Brightness" -> decreaseBrightness(imagePixel);
+            case "Increase Contrast" -> increaseContrast(imagePixel);
+            case "Decrease Contrast" -> decreaseContrast(imagePixel);
+            //case "Grayscale Image" -> grayscaleImage(imagePixel);
+            //case "Increase Saturation" -> increaseSaturation(imagePixel);
+            //case "Decrease Saturation" -> decreaseSaturation(imagePixel);
+            //case "Increase Hue" -> increaseHue(imagePixel);
+            //case "Apply Sepia Filter" -> applySepiaFilter(imagePixel);
+            //case "Filter To Sunset" -> filterToSunset(imagePixel);
+            //case "Filter To Night" -> filterToNight(imagePixel);
+            case "Crop Image" -> cropImage(imagePixel);
+            //case "Rotate Image" -> rotateImage(imagePixel);
+
             default -> throw new IllegalStateException(STR."Unexpected value: \{imageProcess.getName()}");
         };
 
