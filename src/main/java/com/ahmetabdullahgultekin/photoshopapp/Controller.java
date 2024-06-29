@@ -1,6 +1,7 @@
 package com.ahmetabdullahgultekin.photoshopapp;
 
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -10,6 +11,8 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class Controller {
@@ -86,6 +89,49 @@ public class Controller {
         MenuItem newFile = new MenuItem("New");
         MenuItem openFile = new MenuItem("Open");
         MenuItem saveFile = new MenuItem("Save");
+
+        saveFile.setOnAction(_ -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("Saving Image...");
+            Platform.runLater(alert::show);
+
+            try {
+                if(outputImage == null) {
+                    throw new IOException("Output image is null!");
+                }
+                ExecutorService executorService = Executors.newSingleThreadExecutor();
+                Task<Void> task = new Task<>() {
+                    @Override
+                    protected Void call() throws IOException {
+                        imageProcessor.extractImage(DESTINATION_FILE);
+                        System.out.println("Image saved successfully!");
+                        return null;
+                    }
+                };
+                imageProcessor.processedPixelsRateProperty().bind(task.progressProperty());
+                task.setOnSucceeded(_ -> Platform.runLater(() -> {
+                    alert.setHeaderText("Image saved!");
+                    alert.setContentText(STR."Saved to the destination \{DESTINATION_FILE}.");
+                    imageProcessor.processedPixelsRateProperty().unbind();
+                    imageProcessor.setProcessedPixelsRate(0);
+                }));
+                executorService.submit(task);
+                executorService.shutdown();
+                //imageProcessor.extractImage(DESTINATION_FILE);
+                //System.out.println("Image saved successfully!");
+
+            } catch (Exception exception) {
+
+                exception.printStackTrace();
+                System.out.println("Image not saved!");
+
+                alert.setAlertType(Alert.AlertType.ERROR);
+                alert.setTitle("Alert");
+                alert.setHeaderText("Image not saved!");
+                alert.setContentText("Please process the image first!");
+            }
+        });
         MenuItem exitFile = new MenuItem("Exit");
         // Create MenuItems
         MenuItem cropFile = new MenuItem("Crop");
@@ -132,13 +178,8 @@ public class Controller {
                     outputImageView.setImage(outputImage);
                     durationLabel.setText(String.format("Process took: %d ms", duration));
                     processButton.setDisable(false);
+                    imageProcessor.setProcessedPixelsRate(0);
                 });
-
-                try {
-                    imageProcessor.extractImage(DESTINATION_FILE);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
             }
         });
 
@@ -182,7 +223,7 @@ public class Controller {
 //                outputImage = SwingFXUtils.toFXImage(
 //                        imageProcessor.startProcess(SOURCE_FILE, DESTINATION_FILE), null);
             try {
-                outputImage = imageProcessor.startProcess(SOURCE_FILE, DESTINATION_FILE);
+                outputImage = imageProcessor.startProcess(SOURCE_FILE);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -206,7 +247,7 @@ public class Controller {
         String[] text = {"Processing", "Processing .", "Processing . .", "Processing . . ."};
 
         Thread thread = new Thread(() -> {
-            while (! imageProcessor.isCompleted()) {
+            while (!imageProcessor.isCompleted()) {
                 method(text[0]);
                 if (imageProcessor.isCompleted())
                     break;
