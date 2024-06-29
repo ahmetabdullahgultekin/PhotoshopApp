@@ -106,6 +106,7 @@
                 <configuration>
                     <source>22</source>
                     <target>22</target>
+                    <compilerArgs>--enable-preview</compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
@@ -118,7 +119,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                com.ahmetabdullahgultekin.photoshopapp/com.ahmetabdullahgultekin.photoshopapp.HelloApplication
+                                com.ahmetabdullahgultekin.photoshopapp.Controller
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

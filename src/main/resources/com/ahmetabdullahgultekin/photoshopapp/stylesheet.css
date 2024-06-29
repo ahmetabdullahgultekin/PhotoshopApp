@@ -1,0 +1,129 @@
+
+
+.root {
+    -fx-background-color: #000000;
+    -fx-alignment: center;
+}
+
+.hboxtop {
+    -fx-background-color: #0078d7;
+    -fx-alignment: center;
+    -fx-padding: 10px;
+    -fx-spacing: 10px;
+}
+
+.hboxcenter {
+    -fx-background-color: transparent;
+    -fx-alignment: center;
+    -fx-padding: 10px;
+}
+
+.progress-bar {
+    -fx-background-color: #0078d7;
+    -fx-progress-color: #51bf1c;
+    -fx-pref-height: 40px;
+    -fx-pref-width: 400px;
+    -fx-padding: 10px;
+    -fx-alignment: center;
+}
+
+.button {
+    -fx-background-color: #51bf1c;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16px;
+    -fx-padding: 10px;
+    -fx-background-radius: 25px;
+    -fx-alignment: center;
+}
+
+.button:hover {
+    -fx-background-color: #9e7100;
+    -fx-cursor: hand;
+}
+
+.button:disabled {
+    -fx-background-color: #000000;
+    -fx-cursor: not-allowed;
+}
+
+.button:pressed {
+    -fx-background-color: #800000;
+}
+
+.combo-box {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #000000;
+    -fx-pref-height: 30px;
+    -fx-min-width: 200px;
+    -fx-max-height: 20px;
+    -fx-background-radius: 15px;
+    -fx-cell-size: 20px;
+    -fx-font-size: 16px;
+    -fx-padding: 10px;
+    -fx-alignment: center;
+}
+
+.label {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16px;
+    -fx-alignment: center;
+}
+
+.durationlabel {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16px;
+    -fx-alignment: center;
+    -fx-border-color: white;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-pref-width: 200px;
+}
+
+.menu-bar {
+    -fx-background-color: #0078d7;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16px;
+    -fx-alignment: center;
+}
+
+.menu {
+    -fx-background-color: #0078d7;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16px;
+    -fx-alignment: center;
+}
+
+.menu:hover {
+    -fx-background-color: #83adcf;
+}
+
+.menu:pressed {
+    -fx-background-color: #004a87;
+}
+
+.menu-item {
+    -fx-background-color: #0078d7;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16px;
+    -fx-alignment: center;
+    -fx-padding: 10px;
+}
+
+.menu-item:hover {
+    -fx-background-color: #008c9e;
+}
+
+.image-view {
+    -fx-background-color: #b82626;
+    -fx-padding: 10px;
+    -fx-alignment: center;
+    -fx-border-color: white;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+}
+
+.image-view:hover {
+    -fx-background-color: #9e7100;
+}
