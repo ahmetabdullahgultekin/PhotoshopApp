@@ -3,18 +3,13 @@ package com.ahmetabdullahgultekin.photoshopapp;
 public class ImagePixel {
 
     //Properties
-    private int X;
-    private int Y;
+    private final int X;
+    private final int Y;
     private int RGB;
-    private int redValue;
-    private int greenValue;
-    private int blueValue;
+    private final int redValue;
+    private final int greenValue;
+    private final int blueValue;
     private double alphaValue;
-    private double hueValue;
-    private double saturationValue;
-    private double brightnessValue;
-    private double luminanceValue;
-    private double intensityValue;
 
     //Constructor
     public ImagePixel(int x, int y, int RGB) {
