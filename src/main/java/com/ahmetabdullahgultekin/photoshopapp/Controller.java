@@ -8,9 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 
@@ -34,11 +32,11 @@ public class Controller {
     Label durationLabel;
     Image inputImage, outputImage;
     ImageView inputImageView, outputImageView;
-    HBox hBoxTop, hBoxCenter, hBoxBottom;
+    HBox hBoxTop, hBoxCenter;
 
 
     //Constructor
-    public Controller(Stage stage) throws IOException {
+    public Controller(Stage stage) {
 
         imageProcessor = new ImageProcessor();
 
@@ -51,7 +49,7 @@ public class Controller {
     }
 
     //Fill the scene with GUI components
-    private void fillTheStage() throws FileNotFoundException {
+    private void fillTheStage() {
 
         double height, width, heightAndWidth;
         heightAndWidth = 700;
@@ -120,10 +118,11 @@ public class Controller {
         outputImageView.getStyleClass().add("outputimageview");
 
 
-        imageProcessor.processedPixelsRateProperty().addListener((observable, oldValue, newValue) -> {
+        imageProcessor.processedPixelsRateProperty().addListener((_, _, newValue) -> {
 
             progressBar.setProgress(newValue.doubleValue());
 
+            //If the progress is 100% then set the endTime and calculate the duration
             if (newValue.doubleValue() >= 0.99999995) {
                 endTime = System.currentTimeMillis();
                 duration = endTime - startTime;
@@ -134,6 +133,12 @@ public class Controller {
                     durationLabel.setText(String.format("Process took: %d ms", duration));
                     processButton.setDisable(false);
                 });
+
+                try {
+                    imageProcessor.extractImage(DESTINATION_FILE);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -176,7 +181,6 @@ public class Controller {
 
 //                outputImage = SwingFXUtils.toFXImage(
 //                        imageProcessor.startProcess(SOURCE_FILE, DESTINATION_FILE), null);
-
             try {
                 outputImage = imageProcessor.startProcess(SOURCE_FILE, DESTINATION_FILE);
             } catch (Exception e) {
