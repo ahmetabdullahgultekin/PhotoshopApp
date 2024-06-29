@@ -5,7 +5,7 @@ import static java.awt.Color.RGBtoHSB;
 
 public class ImageProcess {
 
-    private String name;
+    private final String name;
 
     //Constructor
     public ImageProcess(String imageProcess) {

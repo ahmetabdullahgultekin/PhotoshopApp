@@ -9,7 +9,7 @@ public class ImagePixel {
     private final int redValue;
     private final int greenValue;
     private final int blueValue;
-    private double alphaValue;
+    private final double alphaValue;
 
     //Constructor
     public ImagePixel(int x, int y, int RGB) {

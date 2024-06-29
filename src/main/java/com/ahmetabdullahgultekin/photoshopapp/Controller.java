@@ -9,10 +9,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -112,14 +110,12 @@ public class Controller {
                     }
                 };
                 imageProcessor.processedPixelsRateProperty().bind(task.progressProperty());
-                task.setOnSucceeded(_ -> {
-                    Platform.runLater(() -> {
-                        alert.setHeaderText("Image saved!");
-                        alert.setContentText(STR."Saved to the destination \{DESTINATION_FILE}.");
-                        imageProcessor.processedPixelsRateProperty().unbind();
-                        imageProcessor.setProcessedPixelsRate(0);
-                    });
-                });
+                task.setOnSucceeded(_ -> Platform.runLater(() -> {
+                    alert.setHeaderText("Image saved!");
+                    alert.setContentText(STR."Saved to the destination \{DESTINATION_FILE}.");
+                    imageProcessor.processedPixelsRateProperty().unbind();
+                    imageProcessor.setProcessedPixelsRate(0);
+                }));
                 executorService.submit(task);
                 executorService.shutdown();
                 //imageProcessor.extractImage(DESTINATION_FILE);
@@ -227,7 +223,7 @@ public class Controller {
 //                outputImage = SwingFXUtils.toFXImage(
 //                        imageProcessor.startProcess(SOURCE_FILE, DESTINATION_FILE), null);
             try {
-                outputImage = imageProcessor.startProcess(SOURCE_FILE, DESTINATION_FILE);
+                outputImage = imageProcessor.startProcess(SOURCE_FILE);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

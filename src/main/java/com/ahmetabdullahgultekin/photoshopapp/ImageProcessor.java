@@ -50,7 +50,7 @@ public class ImageProcessor {
         imageProcesses.add(new ImageProcess("Rotate Image"));
     }
 
-    WritableImage startProcess(String sourceFile, String destinationFile) throws IOException {
+    WritableImage startProcess(String sourceFile) {
 
         System.out.println(numberOfThreads);
         long startTime, endTime;
@@ -88,7 +88,7 @@ public class ImageProcessor {
         resultImage = new WritableImage((int) originalImage.getWidth(), (int) originalImage.getHeight());
     }
 
-    void extractImage(String destination) throws IOException {
+    void extractImage(String destination) {
 
         String newDestination = destination + String.format("%s.png", LocalDate.now());
 
@@ -116,7 +116,7 @@ public class ImageProcessor {
             int xOrigin = 0 ;
             int yOrigin = height * i;
 
-            Task<Void> task = new Task<Void>() {
+            Task<Void> task = new Task<>() {
 
                 @Override
                 protected Void call() {
@@ -127,9 +127,7 @@ public class ImageProcessor {
 
             executorService.submit(task);
 
-            task.setOnSucceeded(_ -> {
-                isCompleted = executorService.isTerminated();
-            });
+            task.setOnSucceeded(_ -> isCompleted = executorService.isTerminated());
         }
 
         executorService.shutdown();
