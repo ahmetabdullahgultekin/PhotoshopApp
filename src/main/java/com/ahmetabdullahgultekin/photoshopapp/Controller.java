@@ -34,7 +34,7 @@ public class Controller {
     Label durationLabel;
     Image inputImage, outputImage;
     ImageView inputImageView, outputImageView;
-    HBox hBoxTop, hBoxCenter, hBoxBottom;
+    HBox hBoxTop, hBoxCenter;
 
 
     //Constructor
@@ -51,7 +51,7 @@ public class Controller {
     }
 
     //Fill the scene with GUI components
-    private void fillTheStage() throws FileNotFoundException {
+    private void fillTheStage() {
 
         double height, width, heightAndWidth;
         heightAndWidth = 700;

@@ -1,7 +1,5 @@
 package com.ahmetabdullahgultekin.photoshopapp;
 
-import java.awt.image.BufferedImage;
-
 import static java.awt.Color.HSBtoRGB;
 import static java.awt.Color.RGBtoHSB;
 
@@ -93,16 +91,6 @@ public class ImageProcess {
         int luminosityInt = (int) luminosity;
 
         return new int[]{luminosityInt, luminosityInt, luminosityInt};
-    }
-
-    public static int[] reduceSaturation(ImagePixel imagePixel) {
-
-        int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
-
-        double average = (red + green + blue) / 3.0;
-        int averageInt = (int) average;
-
-        return new int[]{averageInt, averageInt, averageInt};
     }
 
     public static int[] increaseSaturation(ImagePixel imagePixel) {
@@ -215,9 +203,5 @@ public class ImageProcess {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

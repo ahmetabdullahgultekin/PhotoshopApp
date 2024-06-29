@@ -1,13 +1,10 @@
 package com.ahmetabdullahgultekin.photoshopapp;
 
-
-import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.concurrent.Task;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
-
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -22,7 +19,7 @@ public class ImageProcessor {
     private ImageProcess imageProcess;
     private boolean isCompleted;
     private double totalPixels;
-    private volatile DoubleProperty processedPixelsRate;
+    private final DoubleProperty processedPixelsRate;
     private List<ImageProcess> imageProcesses;
     //private BufferedImage originalImage, resultImage;
     private WritableImage originalImage, resultImage;

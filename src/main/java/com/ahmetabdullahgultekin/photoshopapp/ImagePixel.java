@@ -1,7 +1,5 @@
 package com.ahmetabdullahgultekin.photoshopapp;
 
-import static com.sun.javafx.util.Utils.RGBtoHSB;
-
 public class ImagePixel {
 
     //Properties
@@ -39,52 +37,12 @@ public class ImagePixel {
         return X;
     }
 
-    public void setX(int x) {
-        X = x;
-    }
-
-    public double getIntensityValue() {
-        return intensityValue;
-    }
-
-    public void setIntensityValue(double intensityValue) {
-        this.intensityValue = intensityValue;
-    }
-
-    public double getLuminanceValue() {
-        return luminanceValue;
-    }
-
-    public void setLuminanceValue(double luminanceValue) {
-        this.luminanceValue = luminanceValue;
-    }
-
-    public double getBrightnessValue() {
-        return brightnessValue;
-    }
-
-    public void setBrightnessValue(double brightnessValue) {
-        this.brightnessValue = brightnessValue;
-    }
-
     public int getY() {
         return Y;
     }
 
-    public void setY(int y) {
-        Y = y;
-    }
-
     public int getGreenValue() {
         return greenValue;
-    }
-
-    public void setGreenValue(int greenValue) {
-        this.greenValue = greenValue;
-    }
-
-    public int getRGB() {
-        return RGB;
     }
 
     public void setRGB(int RGB) {
@@ -95,39 +53,7 @@ public class ImagePixel {
         return redValue;
     }
 
-    public void setRedValue(int redValue) {
-        this.redValue = redValue;
-    }
-
     public int getBlueValue() {
         return blueValue;
-    }
-
-    public void setBlueValue(int blueValue) {
-        this.blueValue = blueValue;
-    }
-
-    public double getAlphaValue() {
-        return alphaValue;
-    }
-
-    public void setAlphaValue(double alphaValue) {
-        this.alphaValue = alphaValue;
-    }
-
-    public double getHueValue() {
-        return hueValue;
-    }
-
-    public void setHueValue(double hueValue) {
-        this.hueValue = hueValue;
-    }
-
-    public double getSaturationValue() {
-        return saturationValue;
-    }
-
-    public void setSaturationValue(double saturationValue) {
-        this.saturationValue = saturationValue;
     }
 }
