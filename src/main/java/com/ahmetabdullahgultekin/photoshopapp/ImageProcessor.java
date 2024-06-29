@@ -1,27 +1,38 @@
 package com.ahmetabdullahgultekin.photoshopapp;
 
 
+import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.concurrent.Task;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
 
 import static com.ahmetabdullahgultekin.photoshopapp.ImageProcess.*;
 
 public class ImageProcessor {
 
     private ImageProcess imageProcess;
+    private boolean isCompleted;
+    private double totalPixels;
+    private volatile DoubleProperty processedPixelsRate;
     private List<ImageProcess> imageProcesses;
     //private BufferedImage originalImage, resultImage;
     private WritableImage originalImage, resultImage;
     private long duration;
-    private final int numberOfThreads = Runtime.getRuntime().availableProcessors() * 2;
+    private final int numberOfThreads = Runtime.getRuntime().availableProcessors();
             //8 : (Runtime.getRuntime().availableProcessors() * 2);
 
     public ImageProcessor() {
+        processedPixelsRate = new SimpleDoubleProperty(0);
+
         imageProcess = new ImageProcess("Paint White to Pink");
 
         imageProcesses = new ArrayList<>();
@@ -42,8 +53,9 @@ public class ImageProcessor {
         imageProcesses.add(new ImageProcess("Rotate Image"));
     }
 
-    public WritableImage startProcess(String sourceFile, String destinationFile) throws IOException {
+    public WritableImage startProcess(String sourceFile, String destinationFile) throws IOException, ExecutionException, InterruptedException {
 
+        System.out.println(numberOfThreads);
         long startTime, endTime;
         startTime = System.currentTimeMillis();
 
@@ -56,7 +68,6 @@ public class ImageProcessor {
 
         extractImage(destinationFile);
 
-
         duration = endTime - startTime;
         System.out.println(duration);
 
@@ -68,7 +79,8 @@ public class ImageProcessor {
         long startTime, endTime;
 
         File file = new File(sourceFile);
-        Image image = new Image(file.toURI().toString());
+        //Image image = new Image(file.toURI().toString());
+        Image image = new InputImage(file.toURI().toString());
         startTime = System.currentTimeMillis();
         //TODO High time complexity
         //originalImage = ImageIO.read(file);
@@ -76,7 +88,7 @@ public class ImageProcessor {
 
         endTime = System.currentTimeMillis();
         duration = endTime - startTime;
-        System.out.println(String.format("initialize image %dms", duration));
+        System.out.printf("initialize image %dms%n", duration);
 
         resultImage = new WritableImage((int) originalImage.getWidth(), (int) originalImage.getHeight());
     }
@@ -88,24 +100,50 @@ public class ImageProcessor {
         System.out.println(resultImage.getPixelWriter().getPixelFormat().getType());
     }
 
-    public void assignThreads(WritableImage originalImage, WritableImage resultImage, int numberOfThreads) {
-        List<Thread> threads = new ArrayList<>();
+    public void assignThreads(WritableImage originalImage, WritableImage resultImage, int numberOfThreads) throws ExecutionException, InterruptedException {
+
+        ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
+
+        //List<Thread> threads = new ArrayList<>();
         int width = (int) originalImage.getWidth();
         int height = (int) (originalImage.getHeight() / numberOfThreads);
 
         for(int i = 0; i < numberOfThreads ; i++) {
-            final int threadMultiplier = i;
+            int xOrigin = 0 ;
+            int yOrigin = height * i;
 
-            Thread thread = new Thread(() -> {
-                int xOrigin = 0 ;
-                int yOrigin = height * threadMultiplier;
+            Task<Void> task = new Task<Void>() {
+
+                @Override
+                protected Void call() throws Exception {
+                    recolourImage(originalImage, resultImage, xOrigin, yOrigin, width, height);
+                    return null;
+                }
+            };
+
+            executorService.submit(task);
+
+            task.setOnSucceeded(event -> {
+                isCompleted = executorService.isTerminated();
+            });
+
+            /*
+            Thread thread = new Thread(task);
+                    /*() -> {
+                //int xOrigin = 0 ;
+                //int yOrigin = height * threadMultiplier;
 
                 this.recolourImage(originalImage, resultImage, xOrigin, yOrigin, width, height);
             });
 
             threads.add(thread);
+            */
         }
 
+        executorService.shutdown();
+
+
+        /*
         for(Thread thread : threads) {
             thread.start();
         }
@@ -117,13 +155,21 @@ public class ImageProcessor {
                 e.printStackTrace();
             }
         }
+
+         */
     }
 
     public void recolourImage(WritableImage originalImage, WritableImage resultImage, int leftCorner,
                               int topCorner, int width, int height) {
+        totalPixels = originalImage.getWidth() * originalImage.getHeight();
         for(int x = leftCorner ; x < leftCorner + width && x < originalImage.getWidth() ; x++) {
             for(int y = topCorner ; y < topCorner + height && y < originalImage.getHeight() ; y++) {
+
                 recolourPixel(originalImage, resultImage, x , y);
+
+                double result = (x * originalImage.getHeight() + y) / totalPixels;
+                if(processedPixelsRate.getValue() < result)
+                    processedPixelsRate.setValue(result);
             }
         }
     }
@@ -139,13 +185,13 @@ public class ImageProcessor {
             case "Decrease Brightness" -> decreaseBrightness(imagePixel);
             case "Increase Contrast" -> increaseContrast(imagePixel);
             case "Decrease Contrast" -> decreaseContrast(imagePixel);
-            //case "Grayscale Image" -> grayscaleImage(imagePixel);
-            //case "Increase Saturation" -> increaseSaturation(imagePixel);
-            //case "Decrease Saturation" -> decreaseSaturation(imagePixel);
-            //case "Increase Hue" -> increaseHue(imagePixel);
-            //case "Apply Sepia Filter" -> applySepiaFilter(imagePixel);
-            //case "Filter To Sunset" -> filterToSunset(imagePixel);
-            //case "Filter To Night" -> filterToNight(imagePixel);
+            case "Grayscale Image" -> grayscaleImage(imagePixel);
+            case "Increase Saturation" -> increaseSaturation(imagePixel);
+            case "Decrease Saturation" -> decreaseSaturation(imagePixel);
+            case "Increase Hue" -> increaseHue(imagePixel);
+            case "Apply Sepia Filter" -> applySepiaFilter(imagePixel);
+            case "Filter To Sunset" -> filterToSunset(imagePixel);
+            case "Filter To Night" -> filterToNight(imagePixel);
             case "Crop Image" -> cropImage(imagePixel);
             //case "Rotate Image" -> rotateImage(imagePixel);
 
@@ -215,5 +261,33 @@ public class ImageProcessor {
 
     public int getNumberOfThreads() {
         return numberOfThreads;
+    }
+
+    public double getTotalPixels() {
+        return totalPixels;
+    }
+
+    public void setTotalPixels(double totalPixels) {
+        this.totalPixels = totalPixels;
+    }
+
+    public double getProcessedPixelsRate() {
+        return processedPixelsRate.get();
+    }
+
+    public DoubleProperty processedPixelsRateProperty() {
+        return processedPixelsRate;
+    }
+
+    public void setProcessedPixelsRate(double processedPixelsRate) {
+        this.processedPixelsRate.set(processedPixelsRate);
+    }
+
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public void setCompleted(boolean completed) {
+        isCompleted = completed;
     }
 }

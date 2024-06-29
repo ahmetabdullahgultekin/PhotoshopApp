@@ -4,6 +4,7 @@ import static com.sun.javafx.util.Utils.RGBtoHSB;
 
 public class ImagePixel {
 
+    //Properties
     private int X;
     private int Y;
     private int RGB;

@@ -85,40 +85,57 @@ public class ImageProcess {
         return new int[]{newRed, newGreen, newBlue};
     }
 
-    public static double[] grayscaleImage(ImagePixel imagePixel) {
+    public static int[] grayscaleImage(ImagePixel imagePixel) {
 
         int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
 
         double luminosity = (0.299 * red + 0.587 * green + 0.114 * blue);
+        int luminosityInt = (int) luminosity;
 
-        return new double[]{luminosity, luminosity, luminosity};
+        return new int[]{luminosityInt, luminosityInt, luminosityInt};
     }
 
-    public static double[] reduceSaturation(ImagePixel imagePixel) {
+    public static int[] reduceSaturation(ImagePixel imagePixel) {
 
         int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
 
         double average = (red + green + blue) / 3.0;
+        int averageInt = (int) average;
 
-        return new double[]{average, average, average};
+        return new int[]{averageInt, averageInt, averageInt};
     }
 
-    public static double[] increaseSaturation(ImagePixel imagePixel) {
+    public static int[] increaseSaturation(ImagePixel imagePixel) {
 
         int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
 
         int max = Math.max(red, Math.max(green, blue));
-        int min = Math.min(red, Math.min(green, blue));
+        //int min = Math.min(red, Math.min(green, blue));
         double average = (red + green + blue) / 3.0;
 
         double newRed = average + (max - average) * 2,
                 newGreen = average + (max - average) * 2,
                 newBlue = average + (max - average) * 2;
 
-        return new double[]{newRed, newGreen, newBlue};
+        return new int[]{(int) newRed, (int) newGreen, (int) newBlue};
     }
 
-    public static int[] adjustHue(ImagePixel imagePixel) {
+    public static int[] decreaseSaturation(ImagePixel imagePixel) {
+
+        int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
+
+        //int max = Math.max(red, Math.max(green, blue));
+        int min = Math.min(red, Math.min(green, blue));
+        double average = (red + green + blue) / 3.0;
+
+        double newRed = average - (min + average) * 2,
+                newGreen = average - (min + average) * 2,
+                newBlue = average - (min + average) * 2;
+
+        return new int[]{(int) newRed, (int) newGreen, (int) newBlue};
+    }
+
+    public static int[] increaseHue(ImagePixel imagePixel) {
 
         int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
 
@@ -136,7 +153,7 @@ public class ImageProcess {
         return new int[]{newRed, newGreen, newBlue};
     }
 
-    public static double[] applySepiaFilter(ImagePixel imagePixel) {
+    public static int[] applySepiaFilter(ImagePixel imagePixel) {
 
         int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
 
@@ -148,10 +165,10 @@ public class ImageProcess {
                 newGreen = Math.min(255, sepiaGreen + 50),
                 newBlue = Math.min(255, sepiaBlue + 50);
 
-        return new double[]{newRed, newGreen, newBlue};
+        return new int[]{(int) newRed, (int) newGreen, (int) newBlue};
     }
 
-    public static double[] filterToSunset(ImagePixel imagePixel) {
+    public static int[] filterToSunset(ImagePixel imagePixel) {
 
         int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
 
@@ -159,7 +176,7 @@ public class ImageProcess {
                 newGreen = (0.5 * red + 1.0 * green + 0.1 * blue),
                 newBlue = (0.1 * red + 0.5 * green + 1.0 * blue);
 
-        return new double[]{newRed, newGreen, newBlue};
+        return new int[]{(int) newRed, (int) newGreen, (int) newBlue};
     }
 
     public static int[] cropImage(ImagePixel imagePixel) {
@@ -181,7 +198,7 @@ public class ImageProcess {
         return new int[]{newRed, newGreen, newBlue};
     }
 
-    public static double[] filterToNight(ImagePixel imagePixel) {
+    public static int[] filterToNight(ImagePixel imagePixel) {
 
         int red = imagePixel.getRedValue(), green = imagePixel.getGreenValue(), blue = imagePixel.getBlueValue();
 
@@ -189,7 +206,7 @@ public class ImageProcess {
                 newGreen = (0.1 * red + 0.1 * green + 1.0 * blue),
                 newBlue = (0.1 * red + 0.1 * green + 1.0 * blue);
 
-        return new double[]{newRed, newGreen, newBlue};
+        return new int[]{(int) newRed, (int) newGreen, (int) newBlue};
     }
 
     private static boolean isShadeOfGray(int red, int green, int blue) {
