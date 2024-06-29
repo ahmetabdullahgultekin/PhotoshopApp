@@ -96,7 +96,8 @@ public class ImageProcessor {
         //BufferedImage bufferedImage = new BufferedImage((int)resultImage.getWidth(), (int)resultImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 
         File outputFile = new File(newDestination);
-        BufferedImage bImage = SwingFXUtils.fromFXImage(resultImage, null);
+        Image image = resultImage;
+        BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
         try {
             ImageIO.write(bImage, "png", outputFile);
         } catch (IOException e) {
