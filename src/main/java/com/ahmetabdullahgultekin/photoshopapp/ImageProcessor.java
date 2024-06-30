@@ -6,6 +6,9 @@ import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -17,42 +20,36 @@ import java.util.concurrent.*;
 
 public class ImageProcessor {
 
+    private final Logger logger;
     private ImageProcess imageProcess;
     private boolean isCompleted;
     private final DoubleProperty processedPixelsRate;
     private final List<ImageProcess> imageProcesses;
-    //private BufferedImage originalImage, resultImage;
     private WritableImage originalImage, resultImage;
+    private String sourceFile;
     private long duration;
     private final int numberOfThreads = Runtime.getRuntime().availableProcessors();
             //8 : (Runtime.getRuntime().availableProcessors() * 2);
 
     public ImageProcessor() {
+
+        logger = LogManager.getLogger(Controller.class);
+        logger.info(STR."\{Controller.class.toString()} Logger instance created!");
+
+        //Initial value of process
         processedPixelsRate = new SimpleDoubleProperty(0);
 
+        //Initial value of process
         imageProcess = new ImageProcess("Paint White to Pink");
 
-        imageProcesses = new ArrayList<>();
-        imageProcesses.add(new ImageProcess("Paint White to Pink"));
-        imageProcesses.add(new ImageProcess("Traverse Image"));
-        imageProcesses.add(new ImageProcess("Increase Brightness"));
-        imageProcesses.add(new ImageProcess("Decrease Brightness"));
-        imageProcesses.add(new ImageProcess("Increase Contrast"));
-        imageProcesses.add(new ImageProcess("Decrease Contrast"));
-        imageProcesses.add(new ImageProcess("Grayscale Image"));
-        imageProcesses.add(new ImageProcess("Increase Saturation"));
-        imageProcesses.add(new ImageProcess("Decrease Saturation"));
-        imageProcesses.add(new ImageProcess("Increase Hue"));
-        imageProcesses.add(new ImageProcess("Apply Sepia Filter"));
-        imageProcesses.add(new ImageProcess("Filter To Sunset"));
-        imageProcesses.add(new ImageProcess("Filter To Night"));
-        imageProcesses.add(new ImageProcess("Crop Image"));
-        imageProcesses.add(new ImageProcess("Rotate Image"));
+        imageProcesses = createAndListImageProcesses();
     }
 
-    WritableImage startProcess(String sourceFile) {
+    WritableImage startProcess(String source) {
 
-        System.out.println(numberOfThreads);
+        logger.info(STR."Process started with \{numberOfThreads} threads.");
+        sourceFile = source;
+
         long startTime, endTime;
         startTime = System.currentTimeMillis();
 
@@ -66,7 +63,8 @@ public class ImageProcessor {
         //extractImage(destinationFile);
 
         duration = endTime - startTime;
-        System.out.println(duration);
+
+        logger.info(STR."Process began in \{duration}ms");
 
         return resultImage;
     }
@@ -78,12 +76,12 @@ public class ImageProcessor {
         File file = new File(sourceFile);
         Image image = new InputImage(file.toURI().toString());
         startTime = System.currentTimeMillis();
-        //originalImage = ImageIO.read(file);
         originalImage = new WritableImage(image.getPixelReader(), (int) image.getWidth(), (int) image.getHeight());
 
         endTime = System.currentTimeMillis();
         duration = endTime - startTime;
-        System.out.printf("initialize image %dms%n", duration);
+
+        logger.info("Image initialization took %dms%n", duration);
 
         resultImage = new WritableImage((int) originalImage.getWidth(), (int) originalImage.getHeight());
     }
@@ -91,9 +89,6 @@ public class ImageProcessor {
     void extractImage(String destination) {
 
         String newDestination = destination + String.format("%s.png", LocalDate.now());
-
-        //BufferedImage bufferedImage = SwingFXUtils.fromFXImage(resultImage, null);
-        //BufferedImage bufferedImage = new BufferedImage((int)resultImage.getWidth(), (int)resultImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 
         File outputFile = new File(newDestination);
         Image image = resultImage;
@@ -194,6 +189,30 @@ public class ImageProcessor {
         rgb |= 0xFF000000;
 
         return rgb;
+    }
+
+
+    private List<ImageProcess> createAndListImageProcesses() {
+
+        List<ImageProcess> listOfImageProcesses = new ArrayList<>();
+
+        listOfImageProcesses.add(new ImageProcess("Paint White to Pink"));
+        listOfImageProcesses.add(new ImageProcess("Traverse Image"));
+        listOfImageProcesses.add(new ImageProcess("Increase Brightness"));
+        listOfImageProcesses.add(new ImageProcess("Decrease Brightness"));
+        listOfImageProcesses.add(new ImageProcess("Increase Contrast"));
+        listOfImageProcesses.add(new ImageProcess("Decrease Contrast"));
+        listOfImageProcesses.add(new ImageProcess("Grayscale Image"));
+        listOfImageProcesses.add(new ImageProcess("Increase Saturation"));
+        listOfImageProcesses.add(new ImageProcess("Decrease Saturation"));
+        listOfImageProcesses.add(new ImageProcess("Increase Hue"));
+        listOfImageProcesses.add(new ImageProcess("Apply Sepia Filter"));
+        listOfImageProcesses.add(new ImageProcess("Filter To Sunset"));
+        listOfImageProcesses.add(new ImageProcess("Filter To Night"));
+        listOfImageProcesses.add(new ImageProcess("Crop Image"));
+        listOfImageProcesses.add(new ImageProcess("Rotate Image"));
+
+        return listOfImageProcesses;
     }
 
     public ImageProcess getImageProcess() {

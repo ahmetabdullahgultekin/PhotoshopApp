@@ -1,0 +1,22 @@
+2024-06-30 11:28:00.003 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - Logger instance created!
+2024-06-30 11:28:00.011 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - ImageProcessor instance created!
+2024-06-30 11:28:00.733 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - Stage elements get filled!
+2024-06-30 11:28:01.090 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - Application started!
+2024-06-30 11:28:07.998 [JavaFX Application Thread] ERROR com.ahmetabdullahgultekin.photoshopapp.Controller - Image not saved!
+2024-06-30 11:28:07.998 [JavaFX Application Thread] ERROR com.ahmetabdullahgultekin.photoshopapp.Controller - Output image is null!
+2024-06-30 11:41:47.582 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - class com.ahmetabdullahgultekin.photoshopapp.Controller Logger instance created!
+2024-06-30 11:41:47.589 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - class com.ahmetabdullahgultekin.photoshopapp.Controller Logger instance created!
+2024-06-30 11:41:47.590 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - ImageProcessor instance created!
+2024-06-30 11:41:48.327 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - Stage elements get filled!
+2024-06-30 11:41:48.668 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - Application started!
+2024-06-30 11:41:51.755 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - Process started with 8 threads.
+2024-06-30 11:41:52.250 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - Time taken for starting process: %d ms%n
+2024-06-30 11:43:51.797 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - class com.ahmetabdullahgultekin.photoshopapp.Controller Logger instance created!
+2024-06-30 11:43:51.802 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - class com.ahmetabdullahgultekin.photoshopapp.Controller Logger instance created!
+2024-06-30 11:43:51.803 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - ImageProcessor instance created!
+2024-06-30 11:43:52.540 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - Stage elements get filled!
+2024-06-30 11:43:52.888 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - Application started!
+2024-06-30 11:43:57.495 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - Process started with 8 threads.
+2024-06-30 11:43:57.954 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - Image initialization took %dms%n
+2024-06-30 11:43:58.003 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - Process began in 501
+2024-06-30 11:43:58.003 [JavaFX Application Thread] INFO  com.ahmetabdullahgultekin.photoshopapp.Controller - Time taken for starting process: %d ms%n

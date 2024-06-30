@@ -9,6 +9,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -20,6 +22,10 @@ public class Controller {
     //ImageProcessor class instance
     ImageProcessor imageProcessor;
     long duration, startTime, endTime;
+    double imageHeight, imageWidth, imageHeightAndWidth;
+    int stageWidth, stageHeight;
+    File inputFile;
+    private final Logger logger;
 
     //Directory of the source and destination files
     public final String SOURCE_FILE = "src/main/resources/com/ahmetabdullahgultekin/photoshopapp/pexels-ingo.jpg";
@@ -28,7 +34,7 @@ public class Controller {
     //GUI components
     Stage stage;
     Scene scene;
-    BorderPane mainPane;
+    BorderPane mainPane, inputImagePane, outputImagePane;
     Button processButton;
     ComboBox<String> comboBox;
     ProgressBar progressBar;
@@ -36,44 +42,53 @@ public class Controller {
     Image inputImage, outputImage;
     ImageView inputImageView, outputImageView;
     HBox hBoxTop, hBoxCenter;
+    MenuBar menuBar;
+    Menu fileMenu, editMenu, helpMenu;
+    MenuItem newFile, openFile, saveFile, exitFile, cropFile, aboutFile;
 
 
     //Constructor
     public Controller(Stage stage) {
 
+        logger = LogManager.getLogger(Controller.class);
+        logger.info(STR."\{Controller.class.toString()} Logger instance created!");
+
         imageProcessor = new ImageProcessor();
+        logger.info("ImageProcessor instance created!");
 
         fillTheStage();
+        logger.info("Stage elements get filled!");
 
         this.stage = stage;
         this.stage.setTitle("Photoshop App");
         this.stage.setScene(this.scene);
         this.stage.show();
+        logger.info("Application started!");
     }
 
     //Fill the scene with GUI components
     private void fillTheStage() {
 
-        double height, width, heightAndWidth;
-        heightAndWidth = 700;
-        height = heightAndWidth;
-        width = heightAndWidth;
+        stageWidth = 1600;
+        stageHeight = 900;
+
+        imageHeightAndWidth = 800;
+        imageHeight = imageHeightAndWidth;
+        imageWidth = imageHeightAndWidth;
 
         // Create the MenuBar
-        MenuBar menuBar = new MenuBar();
+        menuBar = new MenuBar();
 
         // Create Menus
-        Menu fileMenu = new Menu("File");
-        Menu editMenu = new Menu("Edit");
-        Menu helpMenu = new Menu("Help");
+        fileMenu = new Menu("File");
+        editMenu = new Menu("Edit");
+        helpMenu = new Menu("Help");
 
         processButton = new Button("Process");
         processButton.setOnMouseClicked(_ -> processImage());
 
         comboBox = new ComboBox<>();
         comboBox.setValue(imageProcessor.getImageProcess().getName());
-        //comboBox.getEditor().setEditable(false);
-        //comboBox.setMinWidth(300);
         comboBox.getItems().addAll(imageProcessor.getImageProcesses().stream().map(ImageProcess::getName).toList());
 
         durationLabel = new Label("Process took: 0 ms");
@@ -81,62 +96,16 @@ public class Controller {
 
         progressBar = new ProgressBar();
         progressBar.setProgress(0);
-        //progressBar.setPrefWidth(200);
-        //progressBar.setPrefHeight(40);
-        //progressBar.progressProperty().bind(imageProcessor.processedPixelsRateProperty());
 
         // Create MenuItems
-        MenuItem newFile = new MenuItem("New");
-        MenuItem openFile = new MenuItem("Open");
-        MenuItem saveFile = new MenuItem("Save");
-
-        saveFile.setOnAction(_ -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
-            alert.setHeaderText("Saving Image...");
-            Platform.runLater(alert::show);
-
-            try {
-                if(outputImage == null) {
-                    throw new IOException("Output image is null!");
-                }
-                ExecutorService executorService = Executors.newSingleThreadExecutor();
-                Task<Void> task = new Task<>() {
-                    @Override
-                    protected Void call() throws IOException {
-                        imageProcessor.extractImage(DESTINATION_FILE);
-                        System.out.println("Image saved successfully!");
-                        return null;
-                    }
-                };
-                imageProcessor.processedPixelsRateProperty().bind(task.progressProperty());
-                task.setOnSucceeded(_ -> Platform.runLater(() -> {
-                    alert.setHeaderText("Image saved!");
-                    alert.setContentText(STR."Saved to the destination \{DESTINATION_FILE}.");
-                    imageProcessor.processedPixelsRateProperty().unbind();
-                    imageProcessor.setProcessedPixelsRate(0);
-                }));
-                executorService.submit(task);
-                executorService.shutdown();
-                //imageProcessor.extractImage(DESTINATION_FILE);
-                //System.out.println("Image saved successfully!");
-
-            } catch (Exception exception) {
-
-                exception.printStackTrace();
-                System.out.println("Image not saved!");
-
-                alert.setAlertType(Alert.AlertType.ERROR);
-                alert.setTitle("Alert");
-                alert.setHeaderText("Image not saved!");
-                alert.setContentText("Please process the image first!");
-            }
-        });
-        MenuItem exitFile = new MenuItem("Exit");
+        newFile = new MenuItem("New");
+        openFile = new MenuItem("Open");
+        saveFile = getSaveFile();
+        exitFile = new MenuItem("Exit");
         // Create MenuItems
-        MenuItem cropFile = new MenuItem("Crop");
+        cropFile = new MenuItem("Crop");
         // Create MenuItems
-        MenuItem aboutFile = new MenuItem("About");
+        aboutFile = new MenuItem("About");
 
         // Add MenuItems to the File Menu
         fileMenu.getItems().addAll(newFile, openFile, saveFile, exitFile);
@@ -147,22 +116,19 @@ public class Controller {
         menuBar.getMenus().addAll(fileMenu, editMenu, helpMenu);
 
         //inputImage = new Image(new FileInputStream(SOURCE_FILE));
-        File file = new File(SOURCE_FILE);
-        inputImage = new InputImage(file.toURI().toString());
+        inputFile = new File(SOURCE_FILE);
+        inputImage = new InputImage(inputFile.toURI().toString());
         inputImageView = new ImageView(inputImage);
 
         outputImageView = new ImageView();
 
-        inputImageView.setFitHeight(height);
-        inputImageView.setFitWidth(width);
+        inputImageView.setFitHeight(imageHeight);
+        inputImageView.setFitWidth(imageWidth);
         inputImageView.setPreserveRatio(true);
-        inputImageView.getStyleClass().add("inputimageview");
 
-        outputImageView.setFitHeight(height);
-        outputImageView.setFitWidth(width);
+        outputImageView.setFitHeight(imageHeight);
+        outputImageView.setFitWidth(imageWidth);
         outputImageView.setPreserveRatio(true);
-        outputImageView.getStyleClass().add("outputimageview");
-
 
         imageProcessor.processedPixelsRateProperty().addListener((_, _, newValue) -> {
 
@@ -187,7 +153,6 @@ public class Controller {
 
         hBoxTop = new HBox();
         hBoxTop.getChildren().addAll(menuBar, comboBox, processButton, progressBar, durationLabel);
-        //hBoxTop.setStyle("-fx-background-color: #0078d7;");
 
         hBoxCenter = new HBox();
         hBoxCenter.getChildren().addAll(inputImageView, outputImageView);
@@ -197,8 +162,54 @@ public class Controller {
         mainPane.setTop(hBoxTop);
         mainPane.setCenter(hBoxCenter);
 
-        this.scene = new Scene(mainPane, 1600, 900);
+        this.scene = new Scene(mainPane, stageWidth, stageHeight);
         scene.getStylesheets().add("com/ahmetabdullahgultekin/photoshopapp/stylesheet.css");
+    }
+
+    private MenuItem getSaveFile() {
+        MenuItem saveFile = new MenuItem("Save");
+
+        saveFile.setOnAction(_ -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("Saving Image...");
+            Platform.runLater(alert::show);
+
+            try {
+                if(outputImage == null) {
+                    throw new IOException("Output image is null!");
+                }
+                ExecutorService executorService = Executors.newSingleThreadExecutor();
+                Task<Void> task = new Task<>() {
+                    @Override
+                    protected Void call() {
+                        imageProcessor.extractImage(DESTINATION_FILE);
+                        logger.info("Image saved successfully!");
+                        return null;
+                    }
+                };
+                imageProcessor.processedPixelsRateProperty().bind(task.progressProperty());
+                task.setOnSucceeded(_ -> Platform.runLater(() -> {
+                    alert.setHeaderText("Image saved!");
+                    alert.setContentText(STR."Saved to the destination \{DESTINATION_FILE}.");
+                    imageProcessor.processedPixelsRateProperty().unbind();
+                    imageProcessor.setProcessedPixelsRate(0);
+                }));
+                executorService.submit(task);
+                executorService.shutdown();
+
+            } catch (Exception exception) {
+
+                logger.error("Image not saved!");
+                logger.error(exception.getMessage());
+
+                alert.setAlertType(Alert.AlertType.ERROR);
+                alert.setTitle("Alert");
+                alert.setHeaderText("Image not saved!");
+                alert.setContentText("Please process the image first!");
+            }
+        });
+        return saveFile;
     }
 
     private void processImage() {
@@ -219,9 +230,6 @@ public class Controller {
             imageProcessor.setImageProcess(new ImageProcess(comboBox.getValue()));
 
             long startTime = System.currentTimeMillis();
-
-//                outputImage = SwingFXUtils.toFXImage(
-//                        imageProcessor.startProcess(SOURCE_FILE, DESTINATION_FILE), null);
             try {
                 outputImage = imageProcessor.startProcess(SOURCE_FILE);
             } catch (Exception e) {
@@ -233,7 +241,7 @@ public class Controller {
             //outputImage = new Image(new FileInputStream(DESTINATION_FILE + STR."_\{LocalDate.now()}.jpg"));
 
             long duration = endTime - startTime;
-            System.out.printf("Time taken: %d ms%n", duration);
+            logger.info("Time taken for starting process: %d ms%n", duration);
 
         } catch (NullPointerException ex) {
             throw new NullPointerException("!!!!!!!!!!!!");
@@ -270,7 +278,7 @@ public class Controller {
         try {
             Thread.sleep(400);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 }
